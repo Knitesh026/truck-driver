@@ -187,7 +187,7 @@
         .app-viewport {
             position: relative;
             width: 100vw;
-            min-height: 145vh;
+            min-height: 112vh;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -1300,6 +1300,107 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* User Rain Overlay Engine */
+        .rain {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 25;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .rain.back-row {
+            display: none;
+            z-index: 24;
+            bottom: 60px;
+            opacity: 0.5;
+        }
+
+        body.back-row-toggle .rain.back-row {
+            display: block;
+        }
+
+        .drop {
+            position: absolute;
+            bottom: 100%;
+            width: 15px;
+            height: 120px;
+            pointer-events: none;
+            animation: drop 0.5s linear infinite;
+        }
+
+        @keyframes drop {
+            0% {
+                transform: translateY(0vh);
+            }
+            75% {
+                transform: translateY(105vh);
+            }
+            100% {
+                transform: translateY(105vh);
+            }
+        }
+
+        .stem {
+            width: 1px;
+            height: 60%;
+            margin-left: 7px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
+            animation: stem 0.5s linear infinite;
+        }
+
+        @keyframes stem {
+            0% {
+                opacity: 1;
+            }
+            65% {
+                opacity: 1;
+            }
+            75% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .splat {
+            width: 15px;
+            height: 10px;
+            border-top: 2px dotted rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            opacity: 1;
+            transform: scale(0);
+            animation: splat 0.5s linear infinite;
+            display: none;
+        }
+
+        body.splat-toggle .splat {
+            display: block;
+        }
+
+        @keyframes splat {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            90% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
         @media (max-width: 1024px) {
             .brand-text-col, .truck-slogan-badge {
                 display: none !important;
@@ -1580,8 +1681,9 @@
             }
         }
     </style>
-</head>
-<body>
+<body class="back-row-toggle splat-toggle">
+    <div class="rain front-row"></div>
+    <div class="rain back-row"></div>
 
     <!-- Sole Animated Background Video Stage (With Mobile Dynamic Video Switcher) -->
     <div class="artwork-driving-stage">
@@ -1720,7 +1822,6 @@
                         setInterval(tickIST, 1000);
                     })();
                 </script>
-
             </div>
         </header>
 
@@ -1904,28 +2005,7 @@
         /* ==========================================================================
            GT ROAD TRUCK DRIVER PLAYLIST DATA
            ========================================================================== */
-        let PLAYLIST = [
-            { id: '1-60aN-zQNo', title: 'Dhoom Pichak Dhoom', artist: 'Euphoria · Phir Dhoom', cat: 'dhaba' },
-            { id: 'YOYN9qNXmAg', title: 'Chaiyya Chaiyya', artist: 'Sukhwinder Singh, Sapna Awasthi · Dil Se', cat: 'punjabi' },
-            { id: '_IcVb6hFhPs', title: 'Ghar Se Nikalte Hi', artist: 'Udit Narayan · Papa Kehte Hain', cat: '90s' },
-            { id: 'nNhv8A_rJTg', title: 'Oye Raju Pyar Na Kariyo', artist: 'T-Series · Hadh Kar Di Aapne', cat: 'dhaba' },
-            { id: 'r4QnmrtiDGI', title: 'Hamne Tumko Dil Ye De Diya', artist: 'Alka Yagnik · G向き', cat: 'sad' },
-            { id: 'vXh0QDAti0A', title: 'Yaar Badal Na Jaana', artist: 'Alka Yagnik, Udit Narayan', cat: '90s' },
-            { id: 'x_elT6zkqN0', title: 'Oh Oh Jane Jaana', artist: 'Kamaal Khan · Pyaar Kiya To Darna Kya', cat: 'dhaba' },
-            { id: 'PqiddY3o3aY', title: 'Dil Kehta Hai', artist: 'Kumar Sanu, Alka Yagnik · Akele Hum Akele Tum', cat: '90s' },
-            { id: 'PlN6oP-Nlno', title: 'Sona Kitna Sona Hai', artist: 'Udit Narayan · Hero No. 1', cat: 'dhaba' },
-            { id: 'B2aHXbnu9dI', title: 'Main Agar Saamne', artist: 'Alka Yagnik, Abhijeet · Raaz', cat: 'sad' },
-            { id: 'otQmzlm-s7Q', title: 'Main Duniya Bhula Doonga', artist: 'Kumar Sanu · Aashiqui', cat: 'sad' },
-            { id: 'rY_0SOlmrdY', title: 'Ankhiyon Se Goli Maare', artist: 'Sonu Nigam · Dulhe Raja', cat: 'dhaba' },
-            { id: 'G7AdjVDBLO8', title: 'Achha Sila Diya Toone', artist: 'Sonu Nigam · Bewafa Sanam', cat: 'sad' },
-            { id: 'CTuvMubzXpU', title: 'Jeeta Tha Jiske Liye', artist: 'Kumar Sanu, Alka Yagnik · Dilwale', cat: 'sad' },
-            { id: '_YjSmLlmqLM', title: 'Aisi Deewangi', artist: 'Alka Yagnik, Vinod Rathod · Deewana', cat: '90s' },
-            { id: 'dDR4oiyjUBA', title: 'Raah Mein Unse Mulaqat', artist: 'Kumar Sanu, Alka Yagnik · Vijaypath', cat: '90s' },
-            { id: '9b0iydtDZLU', title: 'Waada Raha Sanam', artist: 'Abhijeet, Alka Yagnik · Khiladi', cat: '90s' },
-            { id: 'fvwyPGBOEgY', title: 'Dil Ke Badle Sanam', artist: 'T-Series · Kyon Ki', cat: 'sad' },
-            { id: 'XR7qvTgQ19o', title: 'Taaron Ka Chamakta', artist: 'T-Series · Hum Tumhare Hain Sanam', cat: '90s' },
-            { id: 'Yqj1_V90KJo', title: 'Chura Ke Dil Mera', artist: 'Kumar Sanu, Alka Yagnik · Main Khiladi', cat: 'dhaba' }
-        ];
+        let PLAYLIST = [];
 
         let currentTrackIdx = 0;
         let isPlaying = false;
@@ -2255,42 +2335,6 @@
             const h = canvas.height;
 
             ctx.clearRect(0, 0, w, h);
-
-            // Rain & Wipers Animation (Active during Rain Weather)
-            if (isWipersOn) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.38)';
-                ctx.lineWidth = 1.5;
-                rainDrops.forEach(r => {
-                    ctx.beginPath();
-                    ctx.moveTo(r.x, r.y);
-                    ctx.lineTo(r.x - 3, r.y + r.len);
-                    ctx.stroke();
-
-                    r.y += r.speed;
-                    if (r.y > h) {
-                        r.y = -20;
-                        r.x = Math.random() * w;
-                    }
-                });
-
-                wiperAngle += 0.08;
-                const sweep = Math.sin(wiperAngle) * (h * 0.55);
-
-                ctx.strokeStyle = 'rgba(15, 15, 15, 0.95)';
-                ctx.lineWidth = 9;
-                ctx.lineCap = 'round';
-
-                ctx.beginPath();
-                ctx.moveTo(w * 0.28, h);
-                ctx.lineTo(w * 0.28 + sweep, h * 0.42);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(w * 0.72, h);
-                ctx.lineTo(w * 0.72 + sweep, h * 0.42);
-                ctx.stroke();
-            }
-
             requestAnimationFrame(renderTruckHighway);
         }
         requestAnimationFrame(renderTruckHighway);
@@ -2985,6 +3029,31 @@
                 `;
             }
         }
+        var makeItRain = function() {
+            var frontRow = document.querySelector('.rain.front-row');
+            var backRow = document.querySelector('.rain.back-row');
+            if (frontRow) frontRow.innerHTML = '';
+            if (backRow) backRow.innerHTML = '';
+
+            var increment = 0;
+            var drops = "";
+            var backDrops = "";
+
+            while (increment < 100) {
+                var randoHundo = (Math.floor(Math.random() * (98 - 1 + 1) + 1));
+                var randoFiver = (Math.floor(Math.random() * (5 - 2 + 1) + 2));
+                increment += randoFiver;
+                drops += '<div class="drop" style="left: ' + increment + '%; bottom: ' + (randoFiver + randoFiver - 1 + 100) + '%; animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"><div class="stem" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div><div class="splat" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div></div>';
+                backDrops += '<div class="drop" style="right: ' + increment + '%; bottom: ' + (randoFiver + randoFiver - 1 + 100) + '%; animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"><div class="stem" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div><div class="splat" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div></div>';
+            }
+
+            if (frontRow) frontRow.innerHTML = drops;
+            if (backRow) backRow.innerHTML = backDrops;
+        };
+
+        makeItRain();
+        window.addEventListener('resize', makeItRain);
+
         updateLiveClock();
         setInterval(updateLiveClock, 1000);
     </script>

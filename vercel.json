@@ -2,18 +2,38 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*",
+      "src": "server.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "server.py"
+    },
+    {
       "src": "/playlist",
       "dest": "/playlist.html"
     },
     {
+      "src": "/playlist.html",
+      "dest": "/playlist.html"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/index.html"
     }
   ]
 }
