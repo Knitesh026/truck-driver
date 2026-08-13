@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Control Center · GT Road Express</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@500;700;800&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico">
+
+    <style>
+        :root {
+            --bg-dark: #090502;
+            --card-bg: rgba(22, 12, 6, 0.85);
+            --border-amber: rgba(250, 204, 21, 0.25);
+            --truck-yellow: #facc15;
+            --truck-orange: #ea580c;
+            --text-light: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(234, 88, 12, 0.15) 0%, rgba(0, 0, 0, 0) 70%),
+                radial-gradient(circle at 100% 100%, rgba(250, 204, 21, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-amber);
+        }
+
+        .brand-logo-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-logo-title img {
+            height: 48px;
+            width: auto;
+        }
+
+        .brand-logo-title h1 {
+            font-family: 'Anek Devanagari', sans-serif;
+            font-size: 1.8rem;
+            color: var(--truck-yellow);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--truck-yellow), var(--truck-orange));
+            color: #000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-amber);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--truck-yellow);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* Active Badge */
+        .active-status-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(250, 204, 21, 0.08);
+            border: 1px dashed var(--truck-yellow);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+        }
+
+        .active-info h3 {
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .active-info p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* Preset Buttons */
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: left;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--truck-yellow);
+            background: rgba(250, 204, 21, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .preset-btn h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: var(--truck-yellow);
+        }
+
+        .preset-btn span {
+            font-size: 0.78rem;
+            color: var(--text-sub);
+        }
+
+        /* Form Inputs */
+        .input-group {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .text-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .text-input:focus {
+            border-color: var(--truck-yellow);
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.2);
+        }
+
+        .action-btn {
+            background: var(--truck-yellow);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            padding: 0 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #ffe033;
+            transform: scale(1.02);
+        }
+
+        /* Playlist Track Grid */
+        .tracks-list {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            display: grid;
+            gap: 0.5rem;
+            padding-right: 0.3rem;
+        }
+
+        .track-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .track-item img {
+            width: 44px;
+            height: 44px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .track-meta h5 {
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .track-meta p {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+
+        /* Search Results Grid */
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .search-card {
+            display: flex;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 0.8rem;
+            align-items: center;
+        }
+
+        .search-card img {
+            width: 54px;
+            height: 54px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .search-card-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .search-card-info h5 {
+            font-size: 0.88rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+        }
+
+        .search-card-info p {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        .activate-sm-btn {
+            background: rgba(250, 204, 21, 0.15);
+            border: 1px solid var(--truck-yellow);
+            color: var(--truck-yellow);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .activate-sm-btn:hover {
+            background: var(--truck-yellow);
+            color: #000;
+        }
+
+        .banner-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--truck-yellow);
+            color: #000;
+            padding: 1rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .banner-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand-logo-title">
+                <img src="assets/logo.png" alt="Logo">
+                <div>
+                    <h1>ट्रक ड्राइवर · Playlist Manager</h1>
+                    <p style="font-size: 0.85rem; color: var(--text-sub);">Configure active YouTube Music playlists for GT Road Express</p>
+                </div>
+            </div>
+            <a href="/" class="back-btn"><i class="fa-solid fa-truck-fast"></i> Open Truck Player</a>
+        </header>
+
+        <!-- Current Active Playlist Banner -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-radio"></i> Current Active Site Playlist</div>
+            <div class="active-status-box">
+                <div class="active-info">
+                    <h3 id="active-title">Loading Active Playlist...</h3>
+                    <p id="active-details">Fetching from YouTube Music API...</p>
+                </div>
+                <button class="action-btn" onclick="window.location.href='/'"><i class="fa-solid fa-play"></i> Play Now</button>
+            </div>
+        </div>
+
+        <!-- One-Click Preset Playlists -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-fire"></i> Quick Preset Playlists</div>
+            <div class="presets-grid">
+                <button class="preset-btn" onclick="activatePreset('https://music.youtube.com/@official_arijitsingh')">
+                    <h4>🎤 Arijit Singh Hits</h4>
+                    <span>@official_arijitsingh · Top Hits</span>
+                </button>
+
+                <button class="preset-btn" onclick="activatePreset('RDCLAK5uy_kNNx8o3LyD3XF_wKmbZZRMsdiYpo5GjrM')">
+                    <h4>📻 90s Bollywood Express</h4>
+                    <span>Classic GT Road Dhaba Superhits</span>
+                </button>
+
+                <button class="preset-btn" onclick="activatePreset('VLPL2WAE39ngDYNsU2pAE6Vv6Cwlp_Sjp_lc')">
+                    <h4>💔 Highway Sad Melodies</h4>
+                    <span>Late Night Highway Driving Melodies</span>
+                </button>
+
+                <button class="preset-btn" onclick="activatePreset('VLPLk8hwkwnbghSx4osuGK3hIW_-F_7plxtp')">
+                    <h4>🎷 Punjabi Highway Beats</h4>
+                    <span>High Voltage Truck Drivers Dhaba Beats</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Custom URL / ID Input -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-link"></i> Custom YouTube Music Link or Handle</div>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 0.8rem;">
+                Paste any YouTube Music link (e.g. <code>https://music.youtube.com/@official_arijitsingh</code> or playlist link/ID):
+            </p>
+            <div class="input-group">
+                <input type="text" id="custom-link-input" class="text-input" placeholder="Paste YouTube Music URL, Handle or Playlist ID...">
+                <button class="action-btn" onclick="handleCustomActivate()"><i class="fa-solid fa-check"></i> Set Active</button>
+            </div>
+        </div>
+
+        <!-- Live API Playlist Search -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Search YouTube Music API Playlists</div>
+            <div class="input-group">
+                <input type="text" id="search-input" class="text-input" placeholder="Search artist or playlist (e.g. Arijit Singh, Kishore Kumar, Sidhu Moosewala)..." onkeypress="if(event.key==='Enter') searchPlaylists()">
+                <button class="action-btn" onclick="searchPlaylists()"><i class="fa-solid fa-search"></i> Search</button>
+            </div>
+
+            <div class="search-results-grid" id="search-results">
+                <!-- Dynamic search results populated here -->
+            </div>
+        </div>
+
+        <!-- Loaded Playlist Track Preview -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-list-ol"></i> Track Preview (<span id="track-count">0</span> tracks)</div>
+            <div class="tracks-list" id="track-preview-list">
+                <p style="color: var(--text-sub); font-size: 0.9rem;">No tracks loaded yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="banner-toast" id="toast">Playlist activated!</div>
+
+    <script>
+        function getApiBaseUrl() {
+            return (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? '' : 'http://localhost:8000';
+        }
+
+        async function fetchActivePlaylist() {
+            try {
+                const res = await fetch('/api/active-playlist');
+                const data = await res.json();
+                if (data.status === 'success' && data.activePlaylistId) {
+                    loadPlaylistPreview(data.activePlaylistId);
+                }
+            } catch(e) {
+                console.log('Error fetching active playlist:', e);
+            }
+        }
+
+        async function loadPlaylistPreview(playlistId) {
+            const titleEl = document.getElementById('active-title');
+            const detailsEl = document.getElementById('active-details');
+            const listContainer = document.getElementById('track-preview-list');
+            const countEl = document.getElementById('track-count');
+
+            try {
+                const res = await fetch(`/api/playlist/${encodeURIComponent(playlistId)}`);
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    if (titleEl) titleEl.textContent = data.title;
+                    if (detailsEl) detailsEl.textContent = `ID: ${data.id} · ${data.trackCount} Tracks Available`;
+                    if (countEl) countEl.textContent = data.trackCount;
+
+                    if (listContainer) {
+                        listContainer.innerHTML = data.tracks.map(t => `
+                            <div class="track-item">
+                                <img src="${t.thumbnail}" alt="${t.title}">
+                                <div class="track-meta">
+                                    <h5>${t.index}. ${t.title}</h5>
+                                    <p>${t.artist} · ${t.duration}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch(e) {
+                console.log('Error previewing playlist:', e);
+            }
+        }
+
+        async function activatePlaylist(playlistId) {
+            try {
+                const res = await fetch('/api/active-playlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ playlistId: playlistId })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    // Update localStorage
+                    localStorage.setItem('devotion_active_playlist', data.activePlaylistId);
+                    localStorage.setItem('devotion_last_track_idx', '0');
+
+                    showToast(`✅ Activated playlist: ${playlistId}`);
+                    loadPlaylistPreview(data.activePlaylistId);
+                }
+            } catch(e) {
+                showToast(`❌ Error setting playlist`);
+            }
+        }
+
+        function activatePreset(urlOrId) {
+            activatePlaylist(urlOrId);
+        }
+
+        function handleCustomActivate() {
+            const input = document.getElementById('custom-link-input');
+            if (input && input.value.trim()) {
+                activatePlaylist(input.value.trim());
+                input.value = '';
+            }
+        }
+
+        async function searchPlaylists() {
+            const query = document.getElementById('search-input').value;
+            const container = document.getElementById('search-results');
+            if (!query || !query.trim()) return;
+
+            if (container) container.innerHTML = '<p style="color:var(--truck-yellow);">Searching YouTube Music API...</p>';
+
+            try {
+                const res = await fetch(`/api/search-playlists?q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+
+                if (data.status === 'success' && data.playlists && data.playlists.length > 0) {
+                    container.innerHTML = data.playlists.map(p => `
+                        <div class="search-card">
+                            <img src="${p.thumbnail || 'assets/logo.png'}" alt="${p.title}">
+                            <div class="search-card-info">
+                                <h5>${p.title}</h5>
+                                <p>${p.author || 'YouTube Music'} · ${p.itemCount || 50} tracks</p>
+                            </div>
+                            <button class="activate-sm-btn" onclick="activatePlaylist('${p.id}')">Activate</button>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color:var(--text-sub);">No playlists found.</p>';
+                }
+            } catch(e) {
+                container.innerHTML = '<p style="color:red;">Search failed. Try again.</p>';
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3500);
+            }
+        }
+
+        // On Page Load
+        fetchActivePlaylist();
+        searchPlaylists();
+    </script>
+</body>
+</html>
