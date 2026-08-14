@@ -1526,6 +1526,25 @@
                 display: none !important;
             }
 
+            .small-speed-text {
+                display: flex !important;
+                position: relative !important;
+                bottom: auto !important;
+                right: auto !important;
+                left: auto !important;
+                top: auto !important;
+                margin: 0.35rem auto 0 auto !important;
+                border: none !important;
+                box-shadow: none !important;
+                background: rgba(0, 0, 0, 0.45) !important;
+                backdrop-filter: blur(10px) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
+                padding: 0.25rem 0.75rem !important;
+                border-radius: 999px !important;
+                font-size: 0.62rem !important;
+                pointer-events: auto !important;
+            }
+
             .route-switch-btn {
                 position: relative !important;
                 bottom: auto !important;
@@ -1894,6 +1913,25 @@
             border-radius: 999px !important;
             color: var(--truck-yellow) !important;
             text-decoration: none !important;
+        }
+
+        .small-speed-text {
+            display: flex !important;
+            position: relative !important;
+            bottom: auto !important;
+            right: auto !important;
+            left: auto !important;
+            top: auto !important;
+            margin: 0.35rem auto 0 auto !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: rgba(0, 0, 0, 0.45) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            padding: 0.25rem 0.75rem !important;
+            border-radius: 999px !important;
+            font-size: 0.62rem !important;
+            pointer-events: auto !important;
         }
 
         .player-pill-card {
@@ -2319,21 +2357,21 @@
                     <span class="shortcut-badge">B KEY</span>
                 </button>
             </div>
+
+            <!-- Small Text Speed Indicator (Desktop: Bottom-Right Fixed, Mobile: Below Action Buttons - No Border) -->
+            <div class="small-speed-text" id="small-speed-txt">
+                <span class="speed-lbl">SPEED:</span>
+                <span class="speed-val" id="speedo-num">92 KM/H</span>
+            </div>
         </main>
 
         <!-- Bottom Controls Dock -->
         <footer class="bottom-dock">
             <!-- Route Switcher Toggle (Bottom-Left Corner - No Border) -->
-            <a href="purwanchal.html" class="route-switch-btn" id="route-switch-btn" title="Switch to Purwanchal Expressway Route" onclick="window.location.href='purwanchal.html'; return false;">
+            <a href="purwanchal.html" class="route-switch-btn" id="route-switch-btn" title="Switch to Purwanchal Expressway Route">
                 <i class="fa-solid fa-route"></i>
                 <span>PURWANCHAL</span>
             </a>
-
-            <!-- Small Text Speed Indicator (Bottom-Right Corner) -->
-            <div class="small-speed-text" id="small-speed-txt">
-        <span class="speed-lbl">SPEED:</span>
-        <span class="speed-val" id="speedo-num">92 KM/H</span>
-    </div>
 
             <!-- Pill Player Card -->
             <div class="player-pill-card" id="player-card">
@@ -2494,170 +2532,141 @@
             }
         }
 
-        // 1. Heavy Truck Air Horn Synth (Randomized Desi Truck Horn Sounds)
-        function playHeavyAirHorn() {
+        // 1. BusDriver.wtf Authentic Bus & Truck Horn Collection
+        const HORN_SOUNDS = [
+            {
+                file: 'assets/kangana_tera_nii.mp3',
+                banner: '📢 "कंगना तेरा नी!" Viral Dhaba Horn! 🔥',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-rajasthani.mp3',
+                banner: '📢 "राजस्थानी धुन!" Folk Highway Horn! 🐫',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-air.mp3',
+                banner: '📢 "एयर प्रेशर!" Heavy Compressed Air Blast! 💨',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-truck-1.mp3',
+                banner: '📢 "TATA 1613 GT ROAD!" Heavy Express Horn! 🚚',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-truck-2.mp3',
+                banner: '📢 "ढाबा मेलोडी!" Night Highway Tune! 🎶',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-truck-3.mp3',
+                banner: '📢 "VOLVO BUS!" Multi-Tone Pressure Horn! 🚌💨',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-truck-4.mp3',
+                banner: '📢 "देसी एक्सप्रेस!" High-Octane Highway Horn! ⚡',
+                volume: 0.95
+            },
+            {
+                file: 'assets/horn-truck-5.mp3',
+                banner: '📢 "साइरैन हॉर्न!" Escort Strobe Horn! 🚨',
+                volume: 0.95
+            }
+        ];
+
+        let currentHornAudio = null;
+        let lastHornIdx = -1;
+        let originalTrackVolume = 100;
+        let isDuckingVolume = false;
+        let duckRestoreTimer = null;
+
+        function duckTrackVolume() {
+            if (ytPlayer && typeof ytPlayer.getVolume === 'function') {
+                try {
+                    const currentVol = ytPlayer.getVolume();
+                    if (!isDuckingVolume && currentVol > 20) {
+                        originalTrackVolume = currentVol;
+                    }
+                    isDuckingVolume = true;
+                    ytPlayer.setVolume(15);
+                } catch(e) {}
+            }
+
+            if (duckRestoreTimer) clearTimeout(duckRestoreTimer);
+        }
+
+        function restoreTrackVolume() {
+            if (isDuckingVolume && ytPlayer && typeof ytPlayer.setVolume === 'function') {
+                try {
+                    ytPlayer.setVolume(originalTrackVolume || 100);
+                } catch(e) {}
+            }
+            isDuckingVolume = false;
+        }
+
+        function playSynthesizedViralHorn() {
             initAudioContext();
             const now = audioCtx.currentTime;
-            const hornType = Math.floor(Math.random() * 10) + 1;
-
-            if (hornType === 1) {
-                // Tata Dual-Tone Air Horn (Paam Paam!)
-                [280, 360].forEach(freq => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(freq, now);
-                    osc.frequency.exponentialRampToValueAtTime(freq * 0.9, now + 0.65);
-                    gain.gain.setValueAtTime(0.01, now);
-                    gain.gain.linearRampToValueAtTime(0.5, now + 0.05);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.72);
-                });
-            } else if (hornType === 2) {
-                // Naginn Dhaba Melody Horn (Tee-Raa-Raa!)
-                const notes = [440, 494, 523, 587, 659, 587, 523, 494, 440];
-                notes.forEach((freq, i) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    const noteStart = now + (i * 0.08);
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(freq, noteStart);
-                    gain.gain.setValueAtTime(0.01, noteStart);
-                    gain.gain.linearRampToValueAtTime(0.3, noteStart + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, noteStart + 0.075);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(noteStart);
-                    osc.stop(noteStart + 0.08);
-                });
-            } else if (hornType === 3) {
-                // Buri Nazar Multi-Tone Horn
-                const freqs = [350, 440, 523, 698];
-                freqs.forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    const t = now + (idx * 0.12);
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, t);
-                    gain.gain.setValueAtTime(0.01, t);
-                    gain.gain.linearRampToValueAtTime(0.35, t + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.11);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(t);
-                    osc.stop(t + 0.12);
-                });
-            } else if (hornType === 4) {
-                // Dhoom Express Triple-Tone Horn
-                [500, 625, 750].forEach(freq => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.01, now);
-                    gain.gain.linearRampToValueAtTime(0.4, now + 0.03);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.62);
-                });
-            } else if (hornType === 5) {
-                // Rajdhani Highway Siren Horn
+            [350, 440, 523, 698].forEach((freq, idx) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
+                const t = now + (idx * 0.1);
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.linearRampToValueAtTime(900, now + 0.3);
-                osc.frequency.linearRampToValueAtTime(300, now + 0.6);
-                gain.gain.setValueAtTime(0.01, now);
-                gain.gain.linearRampToValueAtTime(0.45, now + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+                osc.frequency.setValueAtTime(freq, t);
+                gain.gain.setValueAtTime(0.01, t);
+                gain.gain.linearRampToValueAtTime(0.4, t + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.68);
-            } else if (hornType === 6) {
-                // Heavy GT Bass Pressure Horn
-                [220, 310, 410, 520].forEach(freq => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.01, now);
-                    gain.gain.linearRampToValueAtTime(0.45, now + 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.95);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.98);
-                });
-            } else if (hornType === 7) {
-                // Bhangra Highway Dhol Rhythm Horn
-                const beats = [220, 330, 440, 330, 220, 440];
-                beats.forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    const t = now + (idx * 0.09);
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, t);
-                    gain.gain.setValueAtTime(0.01, t);
-                    gain.gain.linearRampToValueAtTime(0.4, t + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(t);
-                    osc.stop(t + 0.085);
-                });
-            } else if (hornType === 8) {
-                // Police Escort Strobe Siren Horn
-                for (let i = 0; i < 4; i++) {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    const t = now + (i * 0.14);
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(i % 2 === 0 ? 880 : 660, t);
-                    gain.gain.setValueAtTime(0.01, t);
-                    gain.gain.linearRampToValueAtTime(0.35, t + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(t);
-                    osc.stop(t + 0.135);
+                osc.start(t);
+                osc.stop(t + 0.28);
+            });
+        }
+
+        function playHeavyAirHorn() {
+            try {
+                // Select next or random horn sound avoiding immediate repeat
+                let nextIdx = Math.floor(Math.random() * HORN_SOUNDS.length);
+                if (nextIdx === lastHornIdx && HORN_SOUNDS.length > 1) {
+                    nextIdx = (nextIdx + 1) % HORN_SOUNDS.length;
                 }
-            } else if (hornType === 9) {
-                // WAP-7 Indian Railways Express Train Horn
-                [311, 370, 466, 622].forEach(freq => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.01, now);
-                    gain.gain.linearRampToValueAtTime(0.5, now + 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 1.15);
-                });
-            } else if (hornType === 10) {
-                // Swaraj Tractor High-Pressure Horn
-                [600, 720].forEach(freq => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.01, now);
-                    gain.gain.linearRampToValueAtTime(0.35, now + 0.03);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.52);
-                });
+                lastHornIdx = nextIdx;
+                const hornItem = HORN_SOUNDS[nextIdx];
+
+                // Stop previous horn if currently playing
+                if (currentHornAudio) {
+                    try {
+                        currentHornAudio.pause();
+                        currentHornAudio.currentTime = 0;
+                    } catch(e) {}
+                }
+
+                currentHornAudio = new Audio(hornItem.file);
+                currentHornAudio.volume = hornItem.volume || 0.95;
+                currentHornAudio.addEventListener('ended', restoreTrackVolume);
+                currentHornAudio.addEventListener('pause', restoreTrackVolume);
+
+                // Duck music track volume while horn plays
+                duckTrackVolume();
+
+                const playPromise = currentHornAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch((err) => {
+                        console.log('Audio playback fallback:', err);
+                        playSynthesizedViralHorn();
+                    });
+                }
+
+                // Auto restore volume after 4.2 seconds max
+                if (duckRestoreTimer) clearTimeout(duckRestoreTimer);
+                duckRestoreTimer = setTimeout(restoreTrackVolume, 4200);
+
+                showPopupBanner(hornItem.banner);
+            } catch(e) {
+                console.log('Air horn error:', e);
+                playSynthesizedViralHorn();
             }
 
             // Trigger FX
@@ -2998,7 +3007,7 @@
 
         window.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
-            if (e.code === 'Space') {
+            if (e.code === 'Space' || e.code === 'KeyH') {
                 e.preventDefault();
                 playHeavyAirHorn();
             } else if (e.code === 'KeyB') {
@@ -3476,6 +3485,14 @@
                     updateTrackUI();
                     buildPlaylistDrawerFromData(PLAYLIST);
                     showPopupBanner(`🎵 YT MUSIC: "${data.title}" (${data.trackCount} tracks)`);
+
+                    const activeId = data.id || playlistId;
+                    localStorage.setItem('devotion_active_playlist', activeId);
+                    fetch('/api/active-playlist', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ playlistId: activeId })
+                    }).catch(() => {});
                 } else {
                     buildPlaylistDrawerFromData(PLAYLIST);
                 }
@@ -3607,18 +3624,24 @@
         // Immediately initialize trackpad UI with first track
         updateTrackUI();
 
-        // Fetch initial active playlist on page ready (Server Active Playlist or Arijit Singh Default)
+        // Fetch initial active playlist on page ready (Saved Local / Server Active Playlist or Arijit Singh Default)
         async function initActivePlaylist() {
             const savedLocal = localStorage.getItem('devotion_active_playlist');
-            let initialId = savedLocal || 'https://music.youtube.com/@official_arijitsingh';
+            let initialId = savedLocal;
 
-            try {
-                const res = await fetch('/api/active-playlist');
-                const data = await res.json();
-                if (data.status === 'success' && data.activePlaylistId) {
-                    initialId = data.activePlaylistId;
-                }
-            } catch(e) {}
+            if (!initialId) {
+                try {
+                    const res = await fetch('/api/active-playlist');
+                    const data = await res.json();
+                    if (data.status === 'success' && data.activePlaylistId) {
+                        initialId = data.activePlaylistId;
+                    }
+                } catch(e) {}
+            }
+
+            if (!initialId) {
+                initialId = 'https://music.youtube.com/@official_arijitsingh';
+            }
 
             fetchPlaylistFromYTMusic(initialId);
         }

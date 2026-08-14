@@ -10,8 +10,27 @@ CORS(app)
 ytmusic = YTMusic()
 cache = {}
 
-# Default Active Playlist: Arijit Singh Hits (VLPLtUuYOHQlyT1vTuyNc4owl0gQgE9keubR)
-ACTIVE_PLAYLIST_ID = 'VLPLtUuYOHQlyT1vTuyNc4owl0gQgE9keubR'
+ACTIVE_PLAYLIST_FILE = os.path.join(os.path.dirname(__file__), 'active_playlist.txt')
+
+def load_saved_playlist():
+    if os.path.exists(ACTIVE_PLAYLIST_FILE):
+        try:
+            with open(ACTIVE_PLAYLIST_FILE, 'r', encoding='utf-8') as f:
+                saved = f.read().strip()
+                if saved:
+                    return saved
+        except Exception:
+            pass
+    return 'VLPLtUuYOHQlyT1vTuyNc4owl0gQgE9keubR'
+
+ACTIVE_PLAYLIST_ID = load_saved_playlist()
+
+def save_active_playlist(pid):
+    try:
+        with open(ACTIVE_PLAYLIST_FILE, 'w', encoding='utf-8') as f:
+            f.write(pid)
+    except Exception:
+        pass
 
 def clean_playlist_id(raw_input):
     if not raw_input:
@@ -56,6 +75,7 @@ def playlist_page():
     return send_from_directory('.', 'playlist.html')
 
 @app.route('/purwanchal.html')
+@app.route('/purwanchal')
 def purwanchal_page():
     return send_from_directory('.', 'purwanchal.html')
 
@@ -73,6 +93,7 @@ def manage_active_playlist():
         new_id = data.get('playlistId') or request.form.get('playlistId')
         if new_id:
             ACTIVE_PLAYLIST_ID = clean_playlist_id(new_id)
+            save_active_playlist(ACTIVE_PLAYLIST_ID)
             cache.pop(ACTIVE_PLAYLIST_ID, None)
             return jsonify({'status': 'success', 'activePlaylistId': ACTIVE_PLAYLIST_ID})
         return jsonify({'status': 'error', 'message': 'Missing playlistId'}), 400

@@ -20,6 +20,14 @@
       "dest": "server.py"
     },
     {
+      "src": "/purwanchal",
+      "dest": "/purwanchal.html"
+    },
+    {
+      "src": "/purwanchal.html",
+      "dest": "/purwanchal.html"
+    },
+    {
       "src": "/playlist",
       "dest": "/playlist.html"
     },

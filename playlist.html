@@ -321,6 +321,122 @@
             transform: translateY(0);
             opacity: 1;
         }
+
+        /* Mobile Responsiveness (max-width: 768px) */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.6rem;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .brand-logo-title {
+                gap: 0.75rem;
+            }
+
+            .brand-logo-title img {
+                height: 38px;
+            }
+
+            .brand-logo-title h1 {
+                font-size: 1.3rem;
+            }
+
+            .brand-logo-title p {
+                font-size: 0.78rem !important;
+            }
+
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .card {
+                padding: 1.1rem;
+                margin-bottom: 1.1rem;
+                border-radius: 14px;
+            }
+
+            .card-title {
+                font-size: 1.05rem;
+                gap: 0.5rem;
+            }
+
+            .active-status-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .active-status-box .action-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem 1rem;
+                display: flex;
+                align-items: center;
+            }
+
+            .presets-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .input-group .text-input {
+                width: 100%;
+                padding: 0.75rem 0.85rem;
+            }
+
+            .input-group .action-btn {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                height: auto;
+            }
+
+            .search-results-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .search-card {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem;
+            }
+
+            .search-card img {
+                width: 46px;
+                height: 46px;
+            }
+
+            .activate-sm-btn {
+                padding: 0.35rem 0.65rem;
+                font-size: 0.72rem;
+            }
+
+            .banner-toast {
+                bottom: 1rem;
+                left: 1rem;
+                right: 1rem;
+                text-align: center;
+                padding: 0.85rem 1rem;
+                border-radius: 20px;
+                font-size: 0.88rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -417,14 +533,23 @@
         }
 
         async function fetchActivePlaylist() {
-            try {
-                const res = await fetch('/api/active-playlist');
-                const data = await res.json();
-                if (data.status === 'success' && data.activePlaylistId) {
-                    loadPlaylistPreview(data.activePlaylistId);
+            const savedLocal = localStorage.getItem('devotion_active_playlist');
+            let initialId = savedLocal;
+
+            if (!initialId) {
+                try {
+                    const res = await fetch('/api/active-playlist');
+                    const data = await res.json();
+                    if (data.status === 'success' && data.activePlaylistId) {
+                        initialId = data.activePlaylistId;
+                    }
+                } catch(e) {
+                    console.log('Error fetching active playlist:', e);
                 }
-            } catch(e) {
-                console.log('Error fetching active playlist:', e);
+            }
+
+            if (initialId) {
+                loadPlaylistPreview(initialId);
             }
         }
 
