@@ -1719,7 +1719,24 @@
         if (window.innerWidth > 900) return; // skip on desktop
 
         var css = `
-        /* ── Mobile Trackpad: JS-injected (width=${window.innerWidth}px) ── */
+        /* ── Mobile: NO SCROLL — JS-injected ── */
+        html, body {
+            overflow: hidden !important;
+            overscroll-behavior: none !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            position: fixed !important;
+            width: 100vw !important;
+            touch-action: none !important;
+        }
+
+        .app-viewport {
+            overflow: hidden !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            overscroll-behavior: none !important;
+        }
+
         .small-speed-text { display: none !important; }
 
         footer.bottom-dock, .bottom-dock {
