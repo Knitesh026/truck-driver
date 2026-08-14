@@ -2329,7 +2329,7 @@
 
                 <!-- Left: Cassette / Vinyl Album Thumbnail -->
                 <div class="pill-thumb-box">
-                    <img class="pill-album-img" id="pill-album-img" src="https://i.ytimg.com/vi/1-60aN-zQNo/hqdefault.jpg" alt="">
+                    <img class="pill-album-img" id="pill-album-img" src="assets/logo.png" alt="">
                     <div class="vinyl-center-pin"></div>
                 </div>
 
@@ -3603,41 +3603,56 @@
         });
 
         /* Dashboard Toggles */
-        document.getElementById('beam-toggle-btn').addEventListener('click', (e) => {
-            isHighBeam = !isHighBeam;
-            e.currentTarget.classList.toggle('is-active', isHighBeam);
-        });
+        const beamBtn = document.getElementById('beam-toggle-btn');
+        if (beamBtn) {
+            beamBtn.addEventListener('click', (e) => {
+                isHighBeam = !isHighBeam;
+                e.currentTarget.classList.toggle('is-active', isHighBeam);
+            });
+        }
 
-        document.getElementById('wiper-toggle-btn').addEventListener('click', (e) => {
-            e.currentTarget.classList.toggle('is-active');
-        });
+        const wiperBtn = document.getElementById('wiper-toggle-btn');
+        if (wiperBtn) {
+            wiperBtn.addEventListener('click', (e) => {
+                e.currentTarget.classList.toggle('is-active');
+            });
+        }
 
-        document.getElementById('dhaba-toggle-btn').addEventListener('click', (e) => {
-            isDhabaStop = !isDhabaStop;
-            e.currentTarget.classList.toggle('is-active', isDhabaStop);
-            const tagline = document.getElementById('route-tagline');
-            const speedo = document.getElementById('speedo-num');
+        const dhabaBtn = document.getElementById('dhaba-toggle-btn');
+        if (dhabaBtn) {
+            dhabaBtn.addEventListener('click', (e) => {
+                isDhabaStop = !isDhabaStop;
+                e.currentTarget.classList.toggle('is-active', isDhabaStop);
+                const tagline = document.getElementById('route-tagline');
+                const speedo = document.getElementById('speedo-num');
 
-            if (isDhabaStop) {
-                tagline.textContent = '☕ PURWANCHAL DHABA · KHATIYA CHAI BREAK';
-                speedo.textContent = '0 km/h';
-            } else {
-                tagline.textContent = 'PURWANCHAL EXPRESSWAY · DHABA NIGHTS';
-                speedo.textContent = '92 km/h';
-            }
-        });
+                if (isDhabaStop) {
+                    if (tagline) tagline.textContent = '☕ PURWANCHAL DHABA · KHATIYA CHAI BREAK';
+                    if (speedo) speedo.textContent = '0 km/h';
+                } else {
+                    if (tagline) tagline.textContent = 'PURWANCHAL EXPRESSWAY · DHABA NIGHTS';
+                    if (speedo) speedo.textContent = '92 km/h';
+                }
+            });
+        }
 
         /* Driver Modal */
         const driverModal = document.getElementById('driver-modal');
-        document.getElementById('open-driver-btn').addEventListener('click', () => {
-            driverModal.classList.add('is-open');
-            backdrop.classList.add('is-active');
-        });
+        const openDriverBtn = document.getElementById('open-driver-btn');
+        if (openDriverBtn && driverModal) {
+            openDriverBtn.addEventListener('click', () => {
+                driverModal.classList.add('is-open');
+                if (typeof backdrop !== 'undefined' && backdrop) backdrop.classList.add('is-active');
+            });
+        }
 
-        document.getElementById('close-driver-modal-btn').addEventListener('click', () => {
-            driverModal.classList.remove('is-open');
-            if (!drawer.classList.contains('is-open')) backdrop.classList.remove('is-active');
-        });
+        const closeDriverBtn = document.getElementById('close-driver-modal-btn');
+        if (closeDriverBtn && driverModal) {
+            closeDriverBtn.addEventListener('click', () => {
+                driverModal.classList.remove('is-open');
+                if (typeof drawer !== 'undefined' && typeof backdrop !== 'undefined' && drawer && backdrop && !drawer.classList.contains('is-open')) backdrop.classList.remove('is-active');
+            });
+        }
 
         /* Live IST Clock */
         function updateLiveClock() {
