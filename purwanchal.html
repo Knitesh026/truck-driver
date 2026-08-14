@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google" content="notranslate">
-    <title>ट्रक ड्राइवर · Truck Driver Playlist — GT Road Dhaba Nights</title>
-    <meta name="description" content="GT Road Midnight Highway Express — Non-stop 80s, 90s & Dhaba Hits on a 16-wheeler Tata Truck journey. Free, no login, straight off the Grand Trunk Road.">
+    <title>पूर्वांचल एक्सप्रेसवे · Purwanchal Expressway Dhaba Nights</title>
+    <meta name="description" content="Purwanchal Expressway Midnight Truck Journey — Non-stop 80s, 90s & Purwanchal Dhaba Hits on a 16-wheeler Tata Truck journey. Free, no login.">
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -88,7 +88,7 @@
             top: -24vh;
             left: 0;
             width: 100vw;
-            height: 120vh;
+            height: 100vh;
             object-fit: cover;
             object-position: center 25%;
             pointer-events: none;
@@ -118,28 +118,13 @@
             pointer-events: none;
         }
 
-        /* Vanta 3D Clouds Top 20% Layer with Progressive Blur */
+        /* Vanta 3D Clouds Disabled for Purwanchal Video */
         #vanta-clouds-top {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 20vh;
-            z-index: 11;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 100%);
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 100%);
+            display: none !important;
         }
 
         body.rain-active #vanta-clouds-top {
-            opacity: 1 !important;
-            height: 22vh;
-            filter: brightness(0.7) contrast(1.2);
+            display: none !important;
         }
 
         /* ==========================================================================
@@ -167,20 +152,20 @@
             display: none !important;
         }
 
-        /* Progressive Bottom Blur Overlay (Pure Sand Color Tint - No Black Shadows) */
+        /* Progressive Bottom Blur Overlay (Moody Deep Blue & Cyan Tint for Purwanchal Video) */
         .progressive-blur-bottom {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100vw;
-            height: 35vh;
+            height: 18vh;
             z-index: 10;
             pointer-events: none;
             backdrop-filter: blur(250px) saturate(240%) contrast(115%);
             -webkit-backdrop-filter: blur(250px) saturate(240%) contrast(115%);
             mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.99) 60%, rgba(0, 0, 0, 0.7) 85%, rgba(0, 0, 0, 0) 100%);
             -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.99) 60%, rgba(0, 0, 0, 0.7) 85%, rgba(0, 0, 0, 0) 100%);
-            background: linear-gradient(to top, rgba(90, 46, 2, 0.95) 0%, rgba(102, 56, 3, 0.7) 45%, rgba(195, 125, 38, 0.3) 80%, transparent 100%);
+            background: linear-gradient(to top, rgba(6, 12, 26, 0.96) 0%, rgba(12, 22, 44, 0.75) 45%, rgba(20, 38, 72, 0.35) 80%, transparent 100%);
         }
 
         .progressive-blur-bottom::before {
@@ -189,7 +174,7 @@
             inset: 0;
             backdrop-filter: blur(180px);
             -webkit-backdrop-filter: blur(180px);
-            background: linear-gradient(to top, rgba(120, 68, 16, 0.7) 0%, rgba(155, 92, 24, 0.4) 50%, transparent 100%);
+            background: linear-gradient(to top, rgba(10, 20, 42, 0.75) 0%, rgba(18, 36, 68, 0.45) 50%, transparent 100%);
             mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 70%, transparent 100%);
             -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 70%, transparent 100%);
         }
@@ -591,7 +576,7 @@
             -webkit-backdrop-filter: blur(16px);
             border: none !important;
             outline: none !important;
-            padding: 0.35rem 0.75rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 999px;
             text-decoration: none;
             cursor: pointer;
@@ -1388,10 +1373,10 @@
             }
 
             .hero-artwork-video {
-                top: -14vh !important;
-                height: 124vh !important;
-                object-fit: cover !important;
-                object-position: center 20% !important;
+                top: -7vh !important;
+                height: 100vh !important;
+                object-fit: contain !important;
+                object-position: center center !important;
             }
 
             header.top-navbar {
@@ -1451,7 +1436,7 @@
             }
 
             .hero-title-devanagari {
-                font-size: clamp(1rem, 4.8vw, 1.8rem) !important;
+                font-size: clamp(1.75rem, 6.2vw, 4.15rem) !important;
                 margin-bottom: 0.08rem !important;
                 letter-spacing: -0.5px !important;
             }
@@ -1486,7 +1471,7 @@
             }
 
             .progressive-blur-bottom {
-                height: 15vh !important;
+                height: 20vh !important;
             }
 
             .controls-action-row {
@@ -1820,7 +1805,11 @@
         }
 
         .progressive-blur-bottom {
-            height: 15vh !important;
+            height: 20vh !important;
+        }
+
+        .hero-title-devanagari {
+            font-size: clamp(3.50rem, 7.2vw, 8.15rem) !important;
         }
 
         .brand-text-col, .truck-slogan-badge {
@@ -2137,16 +2126,16 @@
     })();
     </script>
 </head>
-<body>
+<body class="rain-active">
 
     <!-- Sole Animated Background Video Stage (With Mobile Dynamic Video Switcher) -->
     <div class="artwork-driving-stage">
-        <video id="hero-artwork-video" class="hero-artwork-video" autoplay loop muted playsinline src="assets/animate_bus_like_running_smothly_202608132033.mp4"></video>
+        <video id="hero-artwork-video" class="hero-artwork-video" autoplay loop muted playsinline src="assets/purwanchal.mp4"></video>
     </div>
     <script>
         (function initResponsiveBackgroundVideo() {
-            const mobileSrc = 'assets/animate_running_smoothly_202608140129.mp4';
-            const desktopSrc = 'assets/animate_bus_like_running_smothly_202608132033.mp4';
+            const mobileSrc = 'assets/purwamob.mp4';
+            const desktopSrc = 'assets/purwanchal.mp4';
             const videoEl = document.getElementById('hero-artwork-video');
 
             function updateVideoSource() {
@@ -2160,10 +2149,10 @@
                 if (isMobile) {
                     if (brandTextCol) brandTextCol.style.setProperty('display', 'none', 'important');
                     if (sloganBadge) sloganBadge.style.setProperty('display', 'none', 'important');
-                    videoEl.style.top = '-5vh';
-                    videoEl.style.height = '130vh';
+                    videoEl.style.top = '-7vh';
+                    videoEl.style.height = '100vh';
                     videoEl.style.objectFit = 'contain';
-                    videoEl.style.objectPosition = 'center 20%';
+                    videoEl.style.objectPosition = 'center center';
                 } else {
                     if (brandTextCol) brandTextCol.style.display = 'flex';
                     if (sloganBadge) sloganBadge.style.display = 'block';
@@ -2231,8 +2220,8 @@
             <div class="brand-box">
                 <img src="assets/logo.png" alt="Truck Driver Logo" style="height: 42px; width: auto; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
                 <div class="brand-text-col">
-                    <span class="title-hi">ट्रक ड्राइवर</span>
-                    <span class="sub-en">GT ROAD · Ambala ➔ Amritsar</span>
+                    <span class="title-hi">पूर्वांचल एक्सप्रेसवे</span>
+                    <span class="sub-en">PURWANCHAL · Lucknow ➔ Ghazipur</span>
                 </div>
             </div>
 
@@ -2245,8 +2234,8 @@
                 <div class="weather-badge" id="weather-badge" title="OpenWeather Live Highway API">
                     <i class="fa-solid fa-cloud-sun-rain" id="weather-icon" style="color:var(--truck-yellow);"></i>
                     <div class="weather-info-col">
-                        <span class="weather-city" id="weather-city">AMRITSAR</span>
-                        <span class="weather-temp-cond" id="weather-temp-cond">28°C · Rain 🌧️</span>
+                        <span class="weather-city" id="weather-city">LUCKNOW</span>
+                        <span class="weather-temp-cond" id="weather-temp-cond">29°C · Clear 🌌</span>
                     </div>
                 </div>
 
@@ -2285,12 +2274,12 @@
         <!-- Hero Centerpiece -->
         <main class="hero-stage">
             <h1 class="hero-title-devanagari">
-                <span>ट्र</span><span>क</span> <span>ड्रा</span><span>इ</span><span>व</span><span>र</span>
+                <span>P</span><span>U</span><span>R</span><span>W</span><span>A</span><span>N</span><span>C</span><span>H</span><span>A</span><span>L</span>
             </h1>
 
             <div class="truck-art-tagline">
                 <span class="tagline-line"></span>
-                <span class="tagline-text" id="route-tagline">GT ROAD · PEHLWAN DHABA NIGHTS</span>
+                <span class="tagline-text" id="route-tagline">PURWANCHAL EXPRESSWAY · DHABA NIGHTS</span>
                 <span class="tagline-line right"></span>
             </div>
 
@@ -2324,9 +2313,9 @@
         <!-- Bottom Controls Dock -->
         <footer class="bottom-dock">
             <!-- Route Switcher Toggle (Bottom-Left Corner - No Border) -->
-            <a href="purwanchal.html" class="route-switch-btn" id="route-switch-btn" title="Switch to Purwanchal Expressway Route" onclick="window.location.href='purwanchal.html'; return false;">
+            <a href="index.html" class="route-switch-btn" id="route-switch-btn" title="Switch to GT Road Route" onclick="window.location.href='index.html'; return false;">
                 <i class="fa-solid fa-route"></i>
-                <span>PURWANCHAL</span>
+                <span>GT ROAD</span>
             </a>
 
             <!-- Small Text Speed Indicator (Bottom-Right Corner) -->
@@ -3218,22 +3207,8 @@
         }
 
         function applyWeatherAnimation(mainCond) {
-            const isRainy = mainCond === 'Rain' || mainCond === 'Drizzle' || mainCond === 'Thunderstorm';
-            const isCloudy = mainCond === 'Clouds' || mainCond === 'Haze' || mainCond === 'Mist' || mainCond === 'Fog';
-
-            if (isRainy) {
-                document.body.classList.add('rain-active');
-                makeItRain();
-                initVantaCloudsTop();
-            } else {
-                document.body.classList.remove('rain-active');
-            }
-
-            if (isCloudy) {
-                initVantaCloudsTop();
-            } else if (!isRainy) {
-                stopVantaCloudsTop();
-            }
+            document.body.classList.add('rain-active');
+            makeItRain();
         }
 
         /* ==========================================================================
@@ -3424,7 +3399,6 @@
         })();
 
         function makeItRain() {
-            initVantaCloudsTop();
             if (typeof window.initBusdriverWTFRainEngine === 'function') {
                 window.initBusdriverWTFRainEngine();
             }
@@ -3623,6 +3597,10 @@
             fetchPlaylistFromYTMusic(initialId);
         }
         initActivePlaylist();
+        window.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('rain-active');
+            makeItRain();
+        });
 
         /* Dashboard Toggles */
         document.getElementById('beam-toggle-btn').addEventListener('click', (e) => {
@@ -3641,10 +3619,10 @@
             const speedo = document.getElementById('speedo-num');
 
             if (isDhabaStop) {
-                tagline.textContent = '☕ PEHLWAN DHABA · KHATIYA CHAI BREAK';
+                tagline.textContent = '☕ PURWANCHAL DHABA · KHATIYA CHAI BREAK';
                 speedo.textContent = '0 km/h';
             } else {
-                tagline.textContent = 'GT ROAD · PEHLWAN DHABA NIGHTS';
+                tagline.textContent = 'PURWANCHAL EXPRESSWAY · DHABA NIGHTS';
                 speedo.textContent = '92 km/h';
             }
         });

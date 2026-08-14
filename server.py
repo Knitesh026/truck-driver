@@ -55,6 +55,10 @@ def index():
 def playlist_page():
     return send_from_directory('.', 'playlist.html')
 
+@app.route('/purwanchal.html')
+def purwanchal_page():
+    return send_from_directory('.', 'purwanchal.html')
+
 @app.route('/<path:path>')
 def serve_static(path):
     if os.path.exists(path):
