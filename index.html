@@ -136,7 +136,28 @@
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 100%);
         }
 
-        /* Disabled overlays */
+        body.rain-active #vanta-clouds-top {
+            opacity: 1 !important;
+            height: 22vh;
+            filter: brightness(0.7) contrast(1.2);
+        }
+
+        /* ==========================================================================
+        CANVAS RAIN & LIGHTNING ENGINE STYLES
+           ========================================================================== */
+        #busdriver-rain-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 25;
+            display: none;
+        }
+
+        body.rain-active #busdriver-rain-canvas {
+            display: block;
+        }
         .artwork-night-tint,
         .artwork-headlight-cone,
         .cloudy-effect-top,
@@ -740,22 +761,26 @@
             color: #ffffff;
         }
 
-        /* Center Meta & Timeline */
+        /* Center Meta — CSS Grid: [title | controls-right] / [timeline | controls-right] */
         .pill-center-meta {
             flex: 1;
             min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto;
+            column-gap: 1.4rem;
+            row-gap: 0.32rem;
+            align-items: center;
         }
 
         .pill-track-titles {
+            grid-column: 1;
+            grid-row: 1;
             display: flex;
             align-items: baseline;
-            gap: 0.7rem;
-            white-space: nowrap;
+            gap: 0.65rem;
+            min-width: 0;
             overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .pill-track-name {
@@ -765,6 +790,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 0;
         }
 
         .pill-artist-name {
@@ -773,9 +799,24 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            flex-shrink: 0;
         }
 
+        /* Controls — placed in column 2, spans both rows (right side of card) */
+        .pill-controls-group {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            align-self: center;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+        }
+
+        /* Timeline — grid column 1, row 2 (below title) */
         .pill-timeline-line {
+            grid-column: 1;
+            grid-row: 2;
             display: flex;
             align-items: center;
             gap: 0.7rem;
@@ -808,14 +849,6 @@
             background: #E57C23;
             box-shadow: 0 0 8px #E57C23;
             cursor: pointer;
-        }
-
-        /* Right Controls Group */
-        .pill-controls-group {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-shrink: 0;
         }
 
         .pill-icon-btn {
@@ -1300,107 +1333,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* User Rain Overlay Engine */
-        .rain {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 25;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .rain.back-row {
-            display: none;
-            z-index: 24;
-            bottom: 60px;
-            opacity: 0.5;
-        }
-
-        body.back-row-toggle .rain.back-row {
-            display: block;
-        }
-
-        .drop {
-            position: absolute;
-            bottom: 100%;
-            width: 15px;
-            height: 120px;
-            pointer-events: none;
-            animation: drop 0.5s linear infinite;
-        }
-
-        @keyframes drop {
-            0% {
-                transform: translateY(0vh);
-            }
-            75% {
-                transform: translateY(105vh);
-            }
-            100% {
-                transform: translateY(105vh);
-            }
-        }
-
-        .stem {
-            width: 1px;
-            height: 60%;
-            margin-left: 7px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
-            animation: stem 0.5s linear infinite;
-        }
-
-        @keyframes stem {
-            0% {
-                opacity: 1;
-            }
-            65% {
-                opacity: 1;
-            }
-            75% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 0;
-            }
-        }
-
-        .splat {
-            width: 15px;
-            height: 10px;
-            border-top: 2px dotted rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            opacity: 1;
-            transform: scale(0);
-            animation: splat 0.5s linear infinite;
-            display: none;
-        }
-
-        body.splat-toggle .splat {
-            display: block;
-        }
-
-        @keyframes splat {
-            0% {
-                opacity: 1;
-                transform: scale(0);
-            }
-            80% {
-                opacity: 1;
-                transform: scale(0);
-            }
-            90% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(1.5);
-            }
-        }
-
         @media (max-width: 1024px) {
             .brand-text-col, .truck-slogan-badge {
                 display: none !important;
@@ -1542,148 +1474,509 @@
                 display: none !important;
             }
 
-            footer.bottom-dock, .bottom-dock {
-                bottom: calc(env(safe-area-inset-bottom, 0.5rem) + 7rem) !important;
-                padding: 0 0.5rem !important;
+        } /* END @media (max-width: 768px) */
+
+        /* ═══════════════════════════════════════════════════════
+           MOBILE TRACKPAD — 3-ROW LAYOUT  (max-width: 768px)
+           Desktop view above this block is 100% UNTOUCHED
+           ═══════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+
+            /* ── Footer dock ── */
+            footer.bottom-dock,
+            .bottom-dock {
+                position: fixed !important;
+                bottom: calc(env(safe-area-inset-bottom, 0px) + 3.5rem) !important;
+                left: 0 !important;
+                right: 0 !important;
                 width: 100vw !important;
+                padding: 0 0.3rem !important;
                 display: flex !important;
                 justify-content: center !important;
+                align-items: center !important;
+                z-index: 9999 !important;
+                background: transparent !important;
             }
 
+            /* ── Pill card: row → [thumb | meta-column] ── */
             .player-pill-card {
-                padding: 0.15rem 0.35rem !important;
-                gap: 0.25rem !important;
-                width: calc(100vw - 1.25rem) !important;
-                max-width: 320px !important;
-                border-radius: 12px !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                width: 96vw !important;
+                max-width: 96vw !important;
+                min-width: 0 !important;
+                padding: 0.85rem 1.1rem !important;
+                gap: 1rem !important;
+                border-radius: 999px !important;
                 margin: 0 auto !important;
+                background: rgba(14, 5, 1, 0.97) !important;
+                backdrop-filter: blur(30px) !important;
+                -webkit-backdrop-filter: blur(30px) !important;
+                border: 1.5px solid rgba(250, 204, 21, 0.5) !important;
+                box-shadow: 0 6px 24px rgba(0, 0, 0, 0.9) !important;
+                box-sizing: border-box !important;
             }
 
+            /* ── Left: Vinyl/cassette thumbnail ── */
             .pill-thumb-box {
-                width: 16px !important;
-                height: 16px !important;
-                min-width: 16px !important;
+                width: 62px !important;
+                height: 62px !important;
+                min-width: 62px !important;
+                max-width: 62px !important;
+                flex-shrink: 0 !important;
+                border-radius: 50% !important;
+                border: 2px solid rgba(250, 204, 21, 0.75) !important;
+                box-shadow: 0 0 14px rgba(250, 204, 21, 0.25) !important;
+                overflow: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
+            .vinyl-center-pin {
+                width: 8px !important;
+                height: 8px !important;
+            }
+
+            /* ── Right: Meta column — 3 stacked rows ──
+               Explicitly reset desktop CSS Grid to flex-column  */
             .pill-center-meta {
-                min-width: 0;
-                flex: 1;
+                display: flex !important;
+                flex-direction: column !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+                width: 0 !important;          /* force flex to distribute correctly */
+                gap: 0.42rem !important;
+                align-items: stretch !important;
+                overflow: visible !important;
+                /* Reset grid properties */
+                grid-template-columns: none !important;
+                grid-template-rows: none !important;
             }
 
+            /* Reset grid placement on all pill children */
+            .pill-track-titles,
+            .pill-controls-group,
+            .pill-timeline-line {
+                grid-column: auto !important;
+                grid-row: auto !important;
+                align-self: auto !important;
+                width: 100% !important;
+            }
+
+            /* ── ROW 1: Track title + artist ── */
             .pill-track-titles {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: baseline !important;
+                gap: 0.4rem !important;
+                min-width: 0 !important;
+                overflow: hidden !important;
+                flex-shrink: 0 !important;
+                flex-wrap: nowrap !important;
             }
 
             .pill-track-name {
-                font-size: 0.52rem !important;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                font-size: 0.83rem !important;
+                font-weight: 700 !important;
+                color: #ffffff !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                max-width: 55% !important;
+                flex-shrink: 1 !important;
+                line-height: 1.2 !important;
             }
 
             .pill-artist-name {
-                font-size: 0.42rem !important;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                font-size: 0.67rem !important;
+                color: rgba(255, 255, 255, 0.55) !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                flex: 1 !important;
+                min-width: 0 !important;
+                line-height: 1.2 !important;
+            }
+
+            /* ── ROW 2: Controls centered ── */
+            .pill-controls-group {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5rem !important;
+                flex-shrink: 0 !important;
+                margin: 0 !important;
+                padding: 0.1rem 0 !important;
+                border: none !important;
+                background: transparent !important;
+            }
+
+            .pill-icon-btn {
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+                font-size: 0.78rem !important;
+                color: rgba(255, 255, 255, 0.9) !important;
+                border: none !important;
+                background: transparent !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 !important;
+                cursor: pointer !important;
+            }
+
+            .pill-play-btn {
+                width: 34px !important;
+                height: 34px !important;
+                min-width: 34px !important;
+                font-size: 0.85rem !important;
+                background: #ffffff !important;
+                color: #120703 !important;
+                border-radius: 50% !important;
+                border: none !important;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 !important;
+                cursor: pointer !important;
+            }
+
+            /* Volume button — show icon, hide slider */
+            .pill-volume-container {
+                display: flex !important;
+                align-items: center !important;
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            .pill-volume-slider-box {
+                display: none !important;
+            }
+
+            /* ── ROW 3: Timeline ── */
+            .pill-timeline-line {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 0.35rem !important;
+                flex-shrink: 0 !important;
             }
 
             .pill-time-txt {
-                font-size: 0.4rem !important;
-                width: 16px !important;
+                font-size: 0.6rem !important;
+                color: rgba(255, 255, 255, 0.5) !important;
+                min-width: 26px !important;
+                flex-shrink: 0 !important;
+                font-family: 'Courier New', monospace !important;
+                line-height: 1 !important;
+                white-space: nowrap !important;
             }
 
-            .pill-controls-group {
-                gap: 0.12rem !important;
+            .pill-seek-slider {
+                flex: 1 !important;
+                min-width: 0 !important;
+                height: 3px !important;
+                -webkit-appearance: none !important;
+                appearance: none !important;
+                background: rgba(255, 255, 255, 0.2) !important;
+                border-radius: 999px !important;
+                cursor: pointer !important;
+                outline: none !important;
             }
 
-            .pill-icon-btn {
-                width: 14px !important;
-                height: 14px !important;
-                min-width: 14px !important;
-                font-size: 0.38rem !important;
+            .pill-seek-slider::-webkit-slider-thumb {
+                -webkit-appearance: none !important;
+                width: 10px !important;
+                height: 10px !important;
+                border-radius: 50% !important;
+                background: #E57C23 !important;
+                cursor: pointer !important;
             }
 
-            .pill-play-btn {
-                width: 17px !important;
-                height: 17px !important;
-                min-width: 17px !important;
-                font-size: 0.42rem !important;
-            }
-
-            .pill-volume-container {
-                display: none;
+            /* ── Misc ── */
+            .small-speed-text {
+                display: none !important;
             }
 
             .playlist-drawer {
-                width: 100vw;
-                max-width: 100vw;
-                height: 100dvh;
+                width: 100vw !important;
+                max-width: 100vw !important;
+                height: 100dvh !important;
             }
-        }
-
-        @media (max-width: 480px) {
-            footer.bottom-dock, .bottom-dock {
-                bottom: calc(env(safe-area-inset-bottom, 0.5rem) + 6.5rem) !important;
-            }
-            .hero-title-devanagari {
-                font-size: clamp(1rem, 4.8vw, 1.6rem) !important;
-            }
-            .brand-text-col {
-                display: none !important;
-            }
-            .weather-temp-cond {
-                font-size: 0.45rem !important;
-            }
-            .weather-city {
-                font-size: 0.42rem !important;
-            }
-            .action-sub-en {
-                display: none !important;
-            }
-            .main-action-btn {
-                padding: 0.18rem 0.3rem !important;
-            }
-            .action-icon-circle {
-                width: 12px !important;
-                height: 12px !important;
-                font-size: 0.38rem !important;
-            }
-            .action-title-hi {
-                font-size: 0.45rem !important;
-            }
-            .player-pill-card {
-                width: calc(100vw - 0.9rem) !important;
-                padding: 0.15rem 0.35rem !important;
-                gap: 0.2rem !important;
-            }
-            .pill-thumb-box {
-                width: 15px !important;
-                height: 15px !important;
-                min-width: 15px !important;
-            }
-            .pill-icon-btn {
-                width: 13px !important;
-                height: 13px !important;
-                min-width: 13px !important;
-                font-size: 0.35rem !important;
-            }
-            .pill-play-btn {
-                width: 16px !important;
-                height: 16px !important;
-                min-width: 16px !important;
-                font-size: 0.4rem !important;
-            }
-            .pill-artist-name {
-                display: none !important;
             }
         }
     </style>
-<body class="back-row-toggle splat-toggle">
-    <div class="rain front-row"></div>
-    <div class="rain back-row"></div>
+
+    <!-- JS-DRIVEN MOBILE TRACKPAD STYLES — bypasses media query issues -->
+    <script>
+    (function applyMobileTrackpadStyles() {
+        if (window.innerWidth > 900) return; // skip on desktop
+
+        var css = `
+        /* ── Mobile Trackpad: JS-injected (width=${window.innerWidth}px) ── */
+        .small-speed-text { display: none !important; }
+
+        footer.bottom-dock, .bottom-dock {
+            position: fixed !important;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem) !important;
+            left: 0 !important; right: 0 !important;
+            width: 100vw !important;
+            padding: 0 0.3rem !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 9999 !important;
+            background: transparent !important;
+        }
+
+        .player-pill-card {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            width: 96vw !important;
+            max-width: 96vw !important;
+            min-width: 0 !important;
+            padding: 0.85rem 1.1rem !important;
+            gap: 1rem !important;
+            border-radius: 999px !important;
+            margin: 0 auto !important;
+            background: rgba(14, 5, 1, 0.97) !important;
+            backdrop-filter: blur(30px) !important;
+            -webkit-backdrop-filter: blur(30px) !important;
+            border: 1.5px solid rgba(250, 204, 21, 0.5) !important;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.9) !important;
+            box-sizing: border-box !important;
+        }
+
+        .pill-center-meta {
+            gap: 0.42rem !important;
+        }
+
+        /* Cassette: position:relative so the pin stays centered; overflow:hidden clips outside spin */
+        .pill-thumb-box {
+            position: relative !important;
+            width: 62px !important; height: 62px !important;
+            min-width: 62px !important; max-width: 62px !important;
+            flex-shrink: 0 !important;
+            border-radius: 50% !important;
+            border: 2px solid rgba(250,204,21,0.75) !important;
+            box-shadow: 0 0 14px rgba(250,204,21,0.25) !important;
+            overflow: hidden !important;
+            margin: 0 !important; padding: 0 !important;
+        }
+
+        /* Spin animation is on .pill-album-img — works fine inside overflow:hidden circle */
+        .pill-album-img {
+            width: 100% !important; height: 100% !important;
+            object-fit: cover !important; border-radius: 50% !important;
+        }
+
+        .player-pill-card.is-playing .pill-album-img {
+            animation: spinVinyl 6s linear infinite !important;
+        }
+
+        .pill-center-meta {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+            width: 0 !important;
+            gap: 0.28rem !important;
+            align-items: stretch !important;
+            overflow: visible !important;
+        }
+
+        .pill-track-titles {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: baseline !important;
+            gap: 0.4rem !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+            flex-shrink: 0 !important;
+            width: 100% !important;
+            grid-column: auto !important; grid-row: auto !important;
+        }
+
+        .pill-track-name {
+            font-size: 0.82rem !important;
+            font-weight: 700 !important;
+            color: #fff !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-width: 54% !important;
+            line-height: 1.2 !important;
+        }
+
+        .pill-artist-name {
+            font-size: 0.66rem !important;
+            color: rgba(255,255,255,0.55) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            flex: 1 !important; min-width: 0 !important;
+            line-height: 1.2 !important;
+        }
+
+        .pill-controls-group {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.55rem !important;
+            width: 100% !important;
+            flex-shrink: 0 !important;
+            margin: 0 !important; padding: 0.1rem 0 !important;
+            border: none !important; background: transparent !important;
+            grid-column: auto !important; grid-row: auto !important; align-self: auto !important;
+        }
+
+        .pill-icon-btn {
+            width: 28px !important; height: 28px !important;
+            min-width: 28px !important;
+            font-size: 0.78rem !important;
+            color: rgba(255,255,255,0.9) !important;
+            border: none !important; background: transparent !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important; justify-content: center !important;
+            padding: 0 !important; cursor: pointer !important;
+        }
+
+        .pill-play-btn {
+            width: 34px !important; height: 34px !important;
+            min-width: 34px !important;
+            font-size: 0.85rem !important;
+            background: #fff !important; color: #120703 !important;
+            border-radius: 50% !important; border: none !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5) !important;
+            display: flex !important;
+            align-items: center !important; justify-content: center !important;
+            padding: 0 !important; cursor: pointer !important;
+        }
+
+        /* Volume container: relative so vertical popup is positioned above it */
+        .pill-volume-container {
+            position: relative !important;
+            display: flex !important; align-items: center !important;
+            background: transparent !important; border: none !important;
+            padding: 0 !important; border-radius: 0 !important;
+        }
+
+        /* Vertical slider popup — hidden by default, shown when .is-expanded */
+        .pill-volume-slider-box {
+            display: none !important;
+            position: absolute !important;
+            bottom: 48px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 0.35rem !important;
+            background: rgba(14,5,1,0.97) !important;
+            border: 1px solid rgba(250,204,21,0.5) !important;
+            border-radius: 16px !important;
+            padding: 0.75rem 0.5rem !important;
+            z-index: 99999 !important;
+            min-width: 36px !important;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.8) !important;
+        }
+
+        .pill-volume-container.is-expanded .pill-volume-slider-box {
+            display: flex !important;
+        }
+
+        /* Vertical volume slider */
+        .pill-volume-slider {
+            -webkit-appearance: slider-vertical !important;
+            appearance: slider-vertical !important;
+            writing-mode: vertical-lr !important;
+            direction: rtl !important;
+            width: 4px !important;
+            height: 80px !important;
+            cursor: pointer !important;
+            background: rgba(255,255,255,0.2) !important;
+            border-radius: 999px !important;
+            outline: none !important;
+        }
+
+        .volume-val-txt {
+            font-size: 0.58rem !important;
+            color: rgba(250,204,21,1) !important;
+            font-family: monospace !important;
+            text-align: center !important;
+        }
+
+        .pill-timeline-line {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 0.35rem !important;
+            width: 100% !important; flex-shrink: 0 !important;
+            grid-column: auto !important; grid-row: auto !important;
+        }
+
+        .pill-time-txt {
+            font-size: 0.6rem !important;
+            color: rgba(255,255,255,0.5) !important;
+            min-width: 26px !important; flex-shrink: 0 !important;
+            font-family: monospace !important;
+            line-height: 1 !important; white-space: nowrap !important;
+        }
+
+        .pill-seek-slider {
+            flex: 1 !important; min-width: 0 !important;
+            height: 3px !important;
+            -webkit-appearance: none !important; appearance: none !important;
+            background: rgba(255,255,255,0.2) !important;
+            border-radius: 999px !important; cursor: pointer !important;
+        }
+        `;
+
+        var styleEl = document.createElement('style');
+        styleEl.id = 'mobile-trackpad-override';
+        styleEl.textContent = css;
+        document.head.appendChild(styleEl);
+
+        /* Mobile volume button: toggle vertical slider popup */
+        document.addEventListener('DOMContentLoaded', function() {
+            var volBtn = document.getElementById('volume-toggle-btn');
+            var volContainer = document.getElementById('pill-volume-container');
+            var volSliderBox = document.getElementById('volume-slider-box');
+
+            if (volBtn && volContainer && volSliderBox) {
+                /* Force slider-box to flex-direction: column for vertical layout */
+                volSliderBox.style.setProperty('display', 'none', 'important');
+
+                volBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var isOpen = volContainer.classList.contains('is-expanded');
+                    if (isOpen) {
+                        volContainer.classList.remove('is-expanded');
+                    } else {
+                        volContainer.classList.add('is-expanded');
+                    }
+                });
+
+                /* Close popup when tapping outside */
+                document.addEventListener('click', function(e) {
+                    if (!volContainer.contains(e.target)) {
+                        volContainer.classList.remove('is-expanded');
+                    }
+                });
+            }
+        });
+    })();
+    </script>
+</head>
+<body>
 
     <!-- Sole Animated Background Video Stage (With Mobile Dynamic Video Switcher) -->
     <div class="artwork-driving-stage">
@@ -1745,6 +2038,9 @@
 
     <!-- Fullscreen Parallax Highway Canvas -->
     <canvas id="truck-canvas"></canvas>
+
+    <!-- Official busdriver.wtf Parallax Canvas Rain & Lightning Overlay -->
+    <canvas id="busdriver-rain-canvas"></canvas>
 
     <!-- Film Grain & Overlay -->
     <svg class="film-grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -1872,44 +2168,49 @@
         <span class="speed-val" id="speedo-num">92 KM/H</span>
     </div>
 
-            <!-- Pill Player Card (Height Increased & Vinyl Thumbnail Only) -->
+            <!-- Pill Player Card -->
             <div class="player-pill-card" id="player-card">
-                <!-- Circular Vinyl Album Thumbnail ONLY -->
+
+                <!-- Left: Cassette / Vinyl Album Thumbnail -->
                 <div class="pill-thumb-box">
                     <img class="pill-album-img" id="pill-album-img" src="https://i.ytimg.com/vi/1-60aN-zQNo/hqdefault.jpg" alt="">
                     <div class="vinyl-center-pin"></div>
                 </div>
 
-                <!-- Center Meta & Timeline Seeker -->
+                <!-- Right: Meta Column → 3 rows: Title / Controls / Timeline -->
                 <div class="pill-center-meta">
+
+                    <!-- Row 1: Track Title -->
+                    <div class="pill-track-titles">
+                        <span class="pill-track-name" id="current-track-title">Main Agar Saamne</span>
+                        <span class="pill-artist-name" id="current-track-artist">Tips Official</span>
+                    </div>
+
+                    <!-- Row 2: Player Controls (Prev, Play, Next, Volume) -->
+                    <div class="pill-controls-group">
+                        <button class="pill-icon-btn" id="prev-btn" title="Previous Track"><i class="fa-solid fa-backward-step"></i></button>
+                        <button class="pill-play-btn" id="play-btn" title="Play/Pause"><i class="fa-solid fa-play" id="play-icon"></i></button>
+                        <button class="pill-icon-btn" id="next-btn" title="Next Track"><i class="fa-solid fa-forward-step"></i></button>
+
+                        <!-- Volume — expandable on desktop, icon-only on mobile -->
+                        <div class="pill-volume-container" id="pill-volume-container" title="Volume Controller">
+                            <button class="pill-icon-btn" id="volume-toggle-btn" style="border:none; background:transparent;">
+                                <i class="fa-solid fa-volume-high" id="volume-icon"></i>
+                            </button>
+                            <div class="pill-volume-slider-box" id="volume-slider-box">
+                                <input type="range" class="pill-volume-slider" id="volume-slider" min="0" max="100" value="100">
+                                <span class="volume-val-txt" id="volume-val-txt">100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Timeline Seeker -->
                     <div class="pill-timeline-line">
                         <span class="pill-time-txt" id="curr-time">2:02</span>
                         <input type="range" class="pill-seek-slider" id="seek-bar" value="0" min="0" max="100">
                         <span class="pill-time-txt" id="total-time">5:22</span>
                     </div>
 
-                    <div class="pill-track-titles">
-                        <span class="pill-track-name" id="current-track-title">Main Agar Saamne</span>
-                        <span class="pill-artist-name" id="current-track-artist">Tips Official</span>
-                    </div>
-                </div>
-
-                <!-- Right Controls Group (Play/Pause, Prev, Next & Expandable Volume) -->
-                <div class="pill-controls-group">
-                    <button class="pill-icon-btn" id="prev-btn" title="Previous Track"><i class="fa-solid fa-backward-step"></i></button>
-                    <button class="pill-play-btn" id="play-btn" title="Play/Pause"><i class="fa-solid fa-play" id="play-icon"></i></button>
-                    <button class="pill-icon-btn" id="next-btn" title="Next Track"><i class="fa-solid fa-forward-step"></i></button>
-
-                    <!-- Expandable Volume Controller -->
-                    <div class="pill-volume-container" id="pill-volume-container" title="Volume Controller">
-                        <button class="pill-icon-btn" id="volume-toggle-btn" style="border:none; background:transparent;">
-                            <i class="fa-solid fa-volume-high" id="volume-icon"></i>
-                        </button>
-                        <div class="pill-volume-slider-box" id="volume-slider-box">
-                            <input type="range" class="pill-volume-slider" id="volume-slider" min="0" max="100" value="100">
-                            <span class="volume-val-txt" id="volume-val-txt">100%</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </footer>
@@ -2275,19 +2576,7 @@
 
         let roadOffset = 0;
         let isHighBeam = true;
-        let isWipersOn = false;
         let isDhabaStop = false;
-        let wiperAngle = 0;
-
-        const rainDrops = [];
-        for (let i = 0; i < 110; i++) {
-            rainDrops.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                len: Math.random() * 18 + 10,
-                speed: Math.random() * 12 + 14
-            });
-        }
 
         // Night Sky Cloud Silhouettes
         const clouds = [
@@ -2762,19 +3051,215 @@
         }
 
         function applyWeatherAnimation(mainCond) {
-            if (mainCond === 'Clouds' || mainCond === 'Haze' || mainCond === 'Mist' || mainCond === 'Fog') {
+            const isRainy = mainCond === 'Rain' || mainCond === 'Drizzle' || mainCond === 'Thunderstorm';
+            const isCloudy = mainCond === 'Clouds' || mainCond === 'Haze' || mainCond === 'Mist' || mainCond === 'Fog';
+
+            if (isRainy) {
+                document.body.classList.add('rain-active');
+                makeItRain();
                 initVantaCloudsTop();
-                isWipersOn = false;
-            } else if (mainCond === 'Rain' || mainCond === 'Drizzle' || mainCond === 'Thunderstorm') {
+            } else {
+                document.body.classList.remove('rain-active');
+            }
+
+            if (isCloudy) {
+                initVantaCloudsTop();
+            } else if (!isRainy) {
                 stopVantaCloudsTop();
-                isWipersOn = true;
-                const wiperBtn = document.getElementById('wiper-toggle-btn');
-                if (wiperBtn) wiperBtn.classList.add('is-active');
-            } else if (mainCond === 'Clear') {
-                stopVantaCloudsTop();
-                isWipersOn = false;
-                const wiperBtn = document.getElementById('wiper-toggle-btn');
-                if (wiperBtn) wiperBtn.classList.remove('is-active');
+            }
+        }
+
+        /* ==========================================================================
+           OFFICIAL BUSDRIVER.WTF CANVAS RAIN & LIGHTNING ENGINE
+           Direct 1:1 Implementation from https://busdriver.wtf/
+           Multi-layer parallax drops, headlight-tinted streaks, highway landing
+           splashes/ripples, and atmospheric sky lightning flashes.
+           ========================================================================== */
+        (function() {
+            const rainLayersConfig = [{
+                density: 8,
+                length: [9, 17],
+                speed: [380, 560],
+                width: [.5, .9],
+                alpha: [.05, .1],
+                tint: "196,212,232",
+                behind: true,
+                lands: false
+            }, {
+                density: 5,
+                length: [15, 26],
+                speed: [560, 780],
+                width: [.7, 1.1],
+                alpha: [.07, .13],
+                tint: "208,220,236",
+                behind: true,
+                lands: false
+            }, {
+                density: 3.6,
+                length: [26, 46],
+                speed: [950, 1300],
+                width: [1, 1.5],
+                alpha: [.13, .22],
+                tint: "228,231,238",
+                behind: false,
+                lands: true
+            }, {
+                density: 1,
+                length: [62, 112],
+                speed: [1700, 2300],
+                width: [1.8, 3],
+                alpha: [.06, .12],
+                tint: "255,214,172",
+                behind: false,
+                lands: false
+            }];
+
+            const splitIndex = rainLayersConfig.findIndex(e => !e.behind);
+            const lightningCurve = [0, .95, .28, .68, .14, .04, 0];
+
+            function randomRange(min, max) {
+                return min + Math.random() * (max - min);
+            }
+
+            let canvas, ctx;
+            let particles = rainLayersConfig.map(() => []);
+            let splashes = [];
+            let width = 0, height = 0;
+            let roadY = 0;
+            let perfScale = 1;
+            let lightningTimer = randomRange(9, 26);
+            let lightningProgress = -1;
+            let animFrameId = 0;
+            let lastTime = 0;
+
+            function resetDrop(drop, config, startY) {
+                const alpha = randomRange(config.alpha[0], config.alpha[1]);
+                drop.x = randomRange(-0.25 * width, 1.25 * width);
+                drop.y = startY;
+                drop.length = randomRange(config.length[0], config.length[1]);
+                drop.speed = randomRange(config.speed[0], config.speed[1]);
+                drop.width = randomRange(config.width[0], config.width[1]);
+                drop.stroke = `rgba(${config.tint},${alpha.toFixed(3)})`;
+                return drop;
+            }
+
+            function resizeRainCanvas() {
+                if (!canvas || !ctx) return;
+                width = window.innerWidth;
+                height = window.innerHeight;
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                canvas.width = Math.round(width * dpr);
+                canvas.height = Math.round(height * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                perfScale = (navigator.hardwareConcurrency || 8) <= 4 ? 0.7 : 1;
+                roadY = height * 0.85;
+
+                const densityFactor = Math.max((width * height) / 1e5, 5.5);
+                rainLayersConfig.forEach((config, idx) => {
+                    const count = Math.round(config.density * densityFactor * perfScale);
+                    const layer = particles[idx];
+                    while (layer.length > count) layer.pop();
+                    while (layer.length < count) {
+                        layer.push(resetDrop({ x: 0, y: 0, length: 0, speed: 0, width: 0, stroke: "" }, config, randomRange(0, height)));
+                    }
+                });
+            }
+
+            function renderLayer(layerIdx, dt, windAngle) {
+                const config = rainLayersConfig[layerIdx];
+                const stopY = config.lands && roadY ? roadY : height + 80;
+                for (let drop of particles[layerIdx]) {
+                    drop.y += drop.speed * dt;
+                    drop.x += drop.speed * windAngle * dt;
+                    if (drop.y > stopY) {
+                        if (config.lands && roadY && Math.random() < 0.45 && splashes.length < 90) {
+                            splashes.push({ x: drop.x, y: roadY, age: 0 });
+                        }
+                        resetDrop(drop, config, -randomRange(10, 140));
+                        continue;
+                    }
+                    if (drop.x > 1.3 * width) drop.x -= 1.55 * width;
+                    ctx.strokeStyle = drop.stroke;
+                    ctx.lineWidth = drop.width;
+                    ctx.beginPath();
+                    ctx.moveTo(drop.x, drop.y);
+                    ctx.lineTo(drop.x - drop.length * windAngle, drop.y - drop.length);
+                    ctx.stroke();
+                }
+            }
+
+            function animateRainCanvas(now) {
+                animFrameId = window.requestAnimationFrame(animateRainCanvas);
+
+                if (!document.body.classList.contains('rain-active')) {
+                    if (ctx) ctx.clearRect(0, 0, width, height);
+                    return;
+                }
+
+                const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.05) : 0.016;
+                lastTime = now;
+
+                const windAngle = 0.16 + 0.1 * Math.sin(0.00037 * now) + 0.06 * Math.sin(0.00011 * now);
+                ctx.clearRect(0, 0, width, height);
+                ctx.lineCap = "round";
+
+                // Render behind layers
+                for (let i = 0; i < splitIndex; i++) renderLayer(i, dt, windAngle);
+
+                // Render foreground layers
+                for (let i = splitIndex; i < rainLayersConfig.length; i++) renderLayer(i, dt, windAngle);
+
+                // Render ground landing splashes (highway ripples)
+                for (let i = splashes.length - 1; i >= 0; i--) {
+                    const s = splashes[i];
+                    s.age += dt;
+                    if (s.age >= 0.42) {
+                        splashes.splice(i, 1);
+                        continue;
+                    }
+                    const progress = s.age / 0.42;
+                    const rx = 15 * (1 - Math.pow(1 - progress, 2));
+                    const alpha = Math.pow(1 - progress, 2) * 0.24;
+                    ctx.strokeStyle = `rgba(246,226,200,${alpha.toFixed(3)})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.ellipse(s.x, s.y, rx, 0.26 * rx, 0, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+
+                // Atmospheric Sky Lightning Flashes
+                if (lightningProgress < 0) {
+                    lightningTimer -= dt;
+                    if (lightningTimer <= 0) lightningProgress = 0;
+                } else {
+                    lightningProgress += dt;
+                    const idx = Math.floor(lightningProgress / 0.08);
+                    if (idx >= lightningCurve.length - 1) {
+                        lightningProgress = -1;
+                        lightningTimer = randomRange(14, 42);
+                    } else {
+                        const lerp = lightningCurve[idx] + (lightningCurve[idx + 1] - lightningCurve[idx]) * ((lightningProgress / 0.08) - idx);
+                        ctx.fillStyle = `rgba(228,234,248,${(0.085 * lerp).toFixed(3)})`;
+                        ctx.fillRect(0, 0, width, height);
+                    }
+                }
+            }
+
+            window.initBusdriverWTFRainEngine = function() {
+                canvas = document.getElementById('busdriver-rain-canvas');
+                if (!canvas) return;
+                ctx = canvas.getContext('2d');
+                resizeRainCanvas();
+                if (!animFrameId) animFrameId = window.requestAnimationFrame(animateRainCanvas);
+                window.addEventListener('resize', resizeRainCanvas);
+            };
+        })();
+
+        function makeItRain() {
+            initVantaCloudsTop();
+            if (typeof window.initBusdriverWTFRainEngine === 'function') {
+                window.initBusdriverWTFRainEngine();
             }
         }
 
@@ -2979,8 +3464,7 @@
         });
 
         document.getElementById('wiper-toggle-btn').addEventListener('click', (e) => {
-            isWipersOn = !isWipersOn;
-            e.currentTarget.classList.toggle('is-active', isWipersOn);
+            e.currentTarget.classList.toggle('is-active');
         });
 
         document.getElementById('dhaba-toggle-btn').addEventListener('click', (e) => {
@@ -3029,31 +3513,6 @@
                 `;
             }
         }
-        var makeItRain = function() {
-            var frontRow = document.querySelector('.rain.front-row');
-            var backRow = document.querySelector('.rain.back-row');
-            if (frontRow) frontRow.innerHTML = '';
-            if (backRow) backRow.innerHTML = '';
-
-            var increment = 0;
-            var drops = "";
-            var backDrops = "";
-
-            while (increment < 100) {
-                var randoHundo = (Math.floor(Math.random() * (98 - 1 + 1) + 1));
-                var randoFiver = (Math.floor(Math.random() * (5 - 2 + 1) + 2));
-                increment += randoFiver;
-                drops += '<div class="drop" style="left: ' + increment + '%; bottom: ' + (randoFiver + randoFiver - 1 + 100) + '%; animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"><div class="stem" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div><div class="splat" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div></div>';
-                backDrops += '<div class="drop" style="right: ' + increment + '%; bottom: ' + (randoFiver + randoFiver - 1 + 100) + '%; animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"><div class="stem" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div><div class="splat" style="animation-delay: 0.' + randoHundo + 's; animation-duration: 0.5' + randoHundo + 's;"></div></div>';
-            }
-
-            if (frontRow) frontRow.innerHTML = drops;
-            if (backRow) backRow.innerHTML = backDrops;
-        };
-
-        makeItRain();
-        window.addEventListener('resize', makeItRain);
-
         updateLiveClock();
         setInterval(updateLiveClock, 1000);
     </script>
